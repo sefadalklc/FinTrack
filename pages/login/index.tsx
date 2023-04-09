@@ -12,6 +12,8 @@ import {
 } from '@mantine/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useCallback, useState } from 'react';
+import { signIn } from "next-auth/react";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -46,9 +48,22 @@ const useStyles = createStyles((theme) => ({
 
 }));
 
+
 const Login = () => {
   const { classes } = useStyles();
   const router = useRouter();
+
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+
+  const login = useCallback(async () => {
+
+    await signIn('credentials', {
+      email,
+      password,
+    });
+
+  }, [email, password])
 
   return (
     <div className={classes.wrapper}>
@@ -57,10 +72,23 @@ const Login = () => {
           FinTrack
         </Title>
 
-        <TextInput label="Email adresiniz" placeholder="Email adresinizi giriniz" size="lg" />
-        <PasswordInput label="Şifre" placeholder="Şifrenizi giriniz" mt="md" size="lg" />
+        <TextInput
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          label="Email adresiniz"
+          placeholder="Email adresinizi giriniz"
+          size="lg"
+        />
+        <PasswordInput
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          label="Şifre"
+          placeholder="Şifrenizi giriniz"
+          mt="md"
+          size="lg"
+        />
         <Checkbox label="Beni hatırla" mt="xl" size="md" />
-        <Button fullWidth mt="xl" size="md">
+        <Button fullWidth mt="xl" size="md" onClick={login}>
           Giriş Yap
         </Button>
 
