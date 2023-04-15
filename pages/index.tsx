@@ -1,8 +1,11 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import Sidebar from "@/components/Sidebar";
+import HomepageHeroAlert from "@/components/HomepageHeroAlert";
+import CurrencyTable from "@/components/FintrackTable/CurrencyTable";
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
+import { Grid } from '@mantine/core';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,7 +18,16 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Sidebar></Sidebar>
+
+      <Grid m={0}>
+        <Grid.Col p={0} m={0} span="content"><Sidebar /></Grid.Col>
+        <Grid.Col p={20} m={0} span="auto" display={"flex"} >
+          <Grid.Col>
+            <HomepageHeroAlert />
+            <CurrencyTable />
+          </Grid.Col>
+        </Grid.Col>
+      </Grid>
     </>
   )
 }
