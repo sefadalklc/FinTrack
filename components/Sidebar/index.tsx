@@ -1,14 +1,7 @@
 import { useState } from 'react';
 import { createStyles, Navbar, Group, Code, getStylesRef, rem } from '@mantine/core';
 import {
-    IconBellRinging,
-    IconFingerprint,
-    IconKey,
     IconSettings,
-    Icon2fa,
-    IconDatabaseImport,
-    IconReceipt2,
-    IconSwitchHorizontal,
     IconLogout,
     IconHome,
 } from '@tabler/icons-react';
@@ -83,7 +76,7 @@ const data = [
 
 const Sidebar = () => {
     const { classes, cx } = useStyles();
-    const [active, setActive] = useState('Billing');
+    const [active, setActive] = useState<string>('Billing');
 
     const links = data.map((item) => (
         <a

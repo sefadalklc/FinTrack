@@ -1,7 +1,14 @@
 import { Table } from '@mantine/core';
 import React from "react";
 
-const FintrackTable = ({
+interface IFintrackTableProps {
+    caption?: string | React.ReactNode
+    thead: React.ReactNode,
+    rows: React.ReactNode,
+    tfoot?: string | number | React.ReactNode
+}
+
+const FintrackTable: React.FC<IFintrackTableProps> = ({
     caption, thead, rows, tfoot
 }) => {
     return (<div>

@@ -4,8 +4,16 @@ import { createStyles } from "@mantine/core";
 import moment from "moment";
 import { useState, useEffect } from "react";
 
+interface IElementProps {
+    symbol: string,
+    highPrice: number | string
+    lowPrice: number | string
+    openPrice: number | string
+    volume: number | string
+}
 
-const useStyles = createStyles((theme) => ({
+
+const useStyles = createStyles((theme): any => ({
     fetchDate: {
         fontSize: '12px',
         color: theme.colors.gray[5],
@@ -17,7 +25,7 @@ const CurrencyTable = () => {
 
     const { classes } = useStyles();
 
-    const [fetchDate, setFetchDate] = useState();
+    const [fetchDate, setFetchDate] = useState<string>("");
     const { data } = useCurrencies(JSON.stringify(["BTCUSDT", "ETHUSDT", "XRPUSDT", "AVAXUSDT", "SOLUSDT", "DYDXUSDT"]));
 
     useEffect(() => {
@@ -34,7 +42,7 @@ const CurrencyTable = () => {
         </tr>
     );
 
-    const rows = data?.map((element) => (
+    const rows = data?.map((element: IElementProps) => (
         <tr key={element.symbol}>
             <td>{element.symbol}</td>
             <td>{Number(element.highPrice).toFixed(4)}</td>
