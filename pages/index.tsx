@@ -18,16 +18,10 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <Grid m={0}>
-        <Grid.Col p={0} m={0} span="content"><Sidebar /></Grid.Col>
-        <Grid.Col p={20} m={0} span="auto" display={"flex"} >
-          <Grid.Col>
-            <HomepageHeroAlert />
-            <CurrencyTable />
-          </Grid.Col>
-        </Grid.Col>
-      </Grid>
+      <Grid.Col p={15}>
+        <HomepageHeroAlert />
+        <CurrencyTable />
+      </Grid.Col>
     </>
   )
 }
