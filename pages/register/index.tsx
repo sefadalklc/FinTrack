@@ -4,18 +4,19 @@ import {
     createStyles,
     TextInput,
     PasswordInput,
-    Checkbox,
     Button,
     Title,
     Text,
-    Anchor,
     rem,
+    Alert,
 } from '@mantine/core';
 import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { IconAlertCircle } from '@tabler/icons-react';
 
 const useStyles = createStyles((theme) => ({
     wrapper: {
@@ -49,91 +50,118 @@ const useStyles = createStyles((theme) => ({
 
 }));
 
+const registerSchema = Yup.object().shape({
+    email: Yup.string().required("Email alanı gereklidir.").email("Geçerli bir e-posta formatı olmalıdır."),
+    password: Yup.string().required("Şifre alanı gereklidir.").min(6, "En az 6 karakterden oluşmalıdır."),
+    username: Yup.string().required("Kullanıcı adı alanı gereklidir.").min(3, "En az 3 karakterden oluşmalıdır."),
+    name: Yup.string().required("İsim alanı gereklidir.")
+});
+
 const Register = () => {
     const { classes } = useStyles();
     const router = useRouter();
 
+    const formik = useFormik({
+        initialValues: {
+            email: "",
+            password: "",
+            username: "",
+            name: ""
+        },
 
-    const [name, setName] = useState<string>('');
-    const [username, setUsername] = useState<string>('');
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
+        validationSchema: registerSchema,
 
-
-    const register = useCallback(() => {
-        axios.post('/api/register', {
-            email,
-            password,
-            username,
-            name
-        })
-            .then(response => {
-                if (response.status = 200) {
-                    toast.success('Thank you for registering! Your account has been successfully created.');
-                    router.push('/login')
-                }
-                else
-                    toast.error('Registration failed. Please make sure all fields are filled out correctly and try again.')
+        onSubmit: async ({ email, password, username, name }) => {
+            axios.post('/api/register', {
+                email,
+                password,
+                username,
+                name
             })
-            .catch(error => {
-                toast.error('Oops! It looks like something went wrong. Please try again later.')
-            })
-    }, [email, password, username, name])
+                .then(response => {
+                    if (response.status = 200) {
+                        toast.success('Thank you for registering! Your account has been successfully created.');
+                        router.push('/login')
+                    }
+                    else
+                        toast.error('Registration failed. Please make sure all fields are filled out correctly and try again.')
+                })
+                .catch(error => {
+                    toast.error('Oops! It looks like something went wrong. Please try again later.')
+                })
+        },
+    });
 
+    const { errors, touched, values, handleChange, handleSubmit } = formik;
 
     return (
         <div className={classes.wrapper}>
-            <Paper className={classes.form} radius={0} p={30}>
-                <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
-                    FinTrack
-                </Title>
+            <form method='POST' onSubmit={handleSubmit}>
+                <Paper className={classes.form} radius={0} p={30}>
+                    <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
+                        FinTrack
+                    </Title>
 
-                <TextInput
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    label="İsminiz"
-                    placeholder="İsminizi giriniz"
-                    size="lg"
-                />
-                <TextInput
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    label="Kullanıcı adınız"
-                    placeholder="Kullanıcı adınızı giriniz"
-                    size="lg"
-                    mt="md"
-                />
-                <TextInput
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    label="Email adresiniz"
-                    placeholder="Email adresinizi giriniz"
-                    size="lg"
-                    mt="md"
-                />
-                <PasswordInput
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    label="Şifre"
-                    placeholder="Şifrenizi giriniz"
-                    mt="md"
-                    size="lg"
-                />
-                <Button fullWidth mt="xl" size="md" onClick={register}>
-                    Kayıt Ol
-                </Button>
+                    <TextInput
+                        value={values.name}
+                        onChange={handleChange}
+                        label="İsminiz"
+                        placeholder="İsminizi giriniz"
+                        size="lg"
+                        id='name'
+                    />
+                    {errors.name && touched.name && <Alert mt={10} icon={<IconAlertCircle size="2rem" />} color="red" radius="md" p="xs" variant="outline">{errors.name}</Alert>}
 
-                <Text ta="center" mt="md">
-                    Zaten bir hesabınız mı var? {' '}
-                    <Link href="/login" className={classes.link}>
-                        Giriş Yap
-                    </Link>
-                </Text>
-            </Paper>
+                    <TextInput
+                        value={values.username}
+                        onChange={handleChange}
+                        label="Kullanıcı adınız"
+                        placeholder="Kullanıcı adınızı giriniz"
+                        size="lg"
+                        mt="md"
+                        id='username'
+                    />
+                    {errors.username && touched.username && <Alert mt={10} icon={<IconAlertCircle size="2rem" />} color="red" radius="md" p="xs" variant="outline">{errors.username}</Alert>}
+
+                    <TextInput
+                        value={values.email}
+                        onChange={handleChange}
+                        label="Email adresiniz"
+                        placeholder="Email adresinizi giriniz"
+                        size="lg"
+                        mt="md"
+                        id='email'
+                    />
+                    {errors.email && touched.email && <Alert mt={10} icon={<IconAlertCircle size="2rem" />} color="red" radius="md" p="xs" variant="outline">{errors.email}</Alert>}
+
+                    <PasswordInput
+                        value={values.password}
+                        onChange={handleChange}
+                        label="Şifre"
+                        placeholder="Şifrenizi giriniz"
+                        mt="md"
+                        size="lg"
+                        id='password'
+                    />
+                    {errors.password && touched.password && <Alert mt={10} icon={<IconAlertCircle size="2rem" />} color="red" radius="md" p="xs" variant="outline">{errors.password}</Alert>}
+
+                    <Button fullWidth mt="xl" size="md" type='submit'>
+                        Kayıt Ol
+                    </Button>
+
+                    <Text ta="center" mt="md">
+                        Zaten bir hesabınız mı var? {' '}
+                        <Link href="/login" className={classes.link}>
+                            Giriş Yap
+                        </Link>
+                    </Text>
+                </Paper>
+            </form>
         </div>
     );
 }
 
-Register.Layout = AuthLayout;
-
 export default Register;
+
+
+Register.Layout = AuthLayout;
