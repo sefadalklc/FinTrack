@@ -9,6 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
+        console.log(req.body)
         const { email, username, name, password } = req.body;
 
         if (email == "" || username == "" || name == "" || password == "") {

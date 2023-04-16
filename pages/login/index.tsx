@@ -16,6 +16,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { NextPage } from 'next';
 import { IconAlertCircle } from '@tabler/icons-react';
+import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/router';
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -55,7 +57,7 @@ const loginSchema = Yup.object().shape({
 
 const Login: NextPage = () => {
   const { classes } = useStyles();
-
+  const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
@@ -66,10 +68,16 @@ const Login: NextPage = () => {
     validationSchema: loginSchema,
 
     onSubmit: async ({ email, password }) => {
-      await signIn('credentials', {
-        email,
-        password,
-      });
+      try {
+        await signIn('credentials', {
+          email,
+          password,
+        });
+        toast.success('Giriş başarılı!');
+
+      } catch (e) {
+        toast.error('Hata!')
+      }
     },
   });
 
@@ -86,6 +94,7 @@ const Login: NextPage = () => {
           <TextInput
             value={values.email}
             onChange={handleChange}
+            label="Email adresiniz"
             placeholder="Email adresinizi giriniz"
             size="lg"
             id="email"
@@ -102,8 +111,8 @@ const Login: NextPage = () => {
             id="password"
           />
           {errors.password && touched.password && <Alert mt={10} icon={<IconAlertCircle size="2rem" />} color="red" radius="md" p="xs" variant="outline">{errors.password}</Alert>}
-
           <Button fullWidth mt="xl" size="md" type='submit'>
+
             Giriş Yap
           </Button>
 
@@ -115,7 +124,7 @@ const Login: NextPage = () => {
           </Text>
         </Paper>
       </form>
-    </div >
+    </div>
   );
 }
 

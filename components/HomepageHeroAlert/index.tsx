@@ -1,3 +1,4 @@
+import useCurrentUser from "@/hooks/useCurrentUser";
 import { Alert, MantineTheme, createStyles } from "@mantine/core";
 import { IconAlarm, IconMoodSmile } from "@tabler/icons-react";
 
@@ -12,9 +13,12 @@ const useStyles = createStyles((theme): any => ({
 
 const HomepageHeroAlert = () => {
     const { classes } = useStyles();
+
+    const { data: currentUser } = useCurrentUser();
+
     return (
         <Alert icon={<IconMoodSmile size="2rem" />} withCloseButton color="blue" radius="md">
-            <span className={classes.heroAlertText}>Hoşgeldiniz, Sefa Dalkılıç!</span>
+            <span className={classes.heroAlertText}>Hoşgeldiniz, {currentUser?.name}!</span>
         </Alert>
     )
 
