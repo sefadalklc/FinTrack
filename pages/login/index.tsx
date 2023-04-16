@@ -7,13 +7,13 @@ import {
   Button,
   Title,
   Text,
-  Anchor,
   rem,
 } from '@mantine/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
 import { signIn } from "next-auth/react";
+import AuthLayout from '@/layouts/authLayout';
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -102,5 +102,7 @@ const Login = () => {
     </div>
   );
 }
+
+Login.Layout = AuthLayout;
 
 export default Login;

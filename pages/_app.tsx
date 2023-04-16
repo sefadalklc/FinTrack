@@ -6,16 +6,21 @@ import { SessionProvider } from 'next-auth/react';
 import useWindowSize from '@/hooks/useWindowSize';
 import Sidebar from '@/components/Sidebar';
 
+const Noop = ({ children }: any) => <>{children}</>
+
 export default function App({ Component, pageProps }: AppProps) {
 
   const { width, height } = useWindowSize();
+
+
+  const Layout = Component.Layout ?? Noop
 
   return (
     <>
       <SessionProvider session={pageProps.session}>
         <Toaster />
         <Head>
-          <title>Page title</title>
+          <title>FinTrack</title>
           <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
         </Head>
 
@@ -27,12 +32,9 @@ export default function App({ Component, pageProps }: AppProps) {
             colorScheme: 'light',
           }}
         >
-          <Grid m={0}>
-            {width > 850 && <Grid.Col p={0} m={0} span="content"><Sidebar /></Grid.Col>}
-            <Grid.Col p={0} m={0} span="auto" display={"flex"} >
-              <Component {...pageProps} />
-            </Grid.Col>
-          </Grid>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </MantineProvider>
       </SessionProvider>
     </>

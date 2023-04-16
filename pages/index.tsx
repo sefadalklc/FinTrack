@@ -4,7 +4,7 @@ import Sidebar from "@/components/Sidebar";
 import HomepageHeroAlert from "@/components/HomepageHeroAlert";
 import CurrencyTable from "@/components/FintrackTable/CurrencyTable";
 import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
+import BaseLayout from "@/layouts/baseLayout";
 import { Grid } from '@mantine/core';
 
 const inter = Inter({ subsets: ['latin'] })
@@ -25,3 +25,5 @@ export default function Home() {
     </>
   )
 }
+
+Home.Layout = BaseLayout;

@@ -1,3 +1,4 @@
+import AuthLayout from '@/layouts/authLayout';
 import {
     Paper,
     createStyles,
@@ -48,7 +49,7 @@ const useStyles = createStyles((theme) => ({
 
 }));
 
-const Login = () => {
+const Register = () => {
     const { classes } = useStyles();
     const router = useRouter();
 
@@ -133,4 +134,6 @@ const Login = () => {
     );
 }
 
-export default Login;
+Register.Layout = AuthLayout;
+
+export default Register;
