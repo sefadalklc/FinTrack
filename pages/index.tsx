@@ -6,6 +6,7 @@ import CurrencyTable from "@/components/FintrackTable/CurrencyTable";
 import { Inter } from 'next/font/google'
 import BaseLayout from "@/layouts/baseLayout";
 import { Grid } from '@mantine/core';
+import TradingViewRealTimeWidget from '@/components/TradingViewRealTimeWidget';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,6 +22,7 @@ export default function Home() {
       <Grid.Col p={15}>
         <HomepageHeroAlert />
         <CurrencyTable />
+        <TradingViewRealTimeWidget />
       </Grid.Col>
     </>
   )
