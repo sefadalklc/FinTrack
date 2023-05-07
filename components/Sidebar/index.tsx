@@ -5,6 +5,9 @@ import {
     IconLogout,
     IconHome,
 } from '@tabler/icons-react';
+import Link from 'next/link';
+import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const useStyles = createStyles((theme) => ({
     navbar: {
@@ -70,8 +73,8 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const data = [
-    { link: '', label: 'Anasayfa', icon: IconHome },
-    { link: '', label: 'Ayarlar', icon: IconSettings },
+    { link: '/', label: 'Anasayfa', icon: IconHome },
+    { link: '/settings', label: 'Ayarlar', icon: IconSettings },
 ];
 
 const Sidebar = () => {
@@ -79,18 +82,15 @@ const Sidebar = () => {
     const [active, setActive] = useState<string>('Billing');
 
     const links = data.map((item) => (
-        <a
+        <Link
+            key={item.label}
             className={cx(classes.link, { [classes.linkActive]: item.label === active })}
             href={item.link}
-            key={item.label}
-            onClick={(event) => {
-                event.preventDefault();
-                setActive(item.label);
-            }}
+            onClick={() => { setActive(item.label); }}
         >
             <item.icon className={classes.linkIcon} stroke={1.5} />
             <span>{item.label}</span>
-        </a>
+        </Link>
     ));
 
     return (
@@ -104,11 +104,12 @@ const Sidebar = () => {
             </Navbar.Section>
 
             <Navbar.Section className={classes.footer}>
-
-                <a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>
+                <div className={classes.link} onClick={() => {
+                    signOut()
+                }}>
                     <IconLogout className={classes.linkIcon} stroke={1.5} />
                     <span>Çıkış Yap</span>
-                </a>
+                </div>
             </Navbar.Section>
         </Navbar>
     );
