@@ -1,4 +1,4 @@
-import { Table } from '@mantine/core';
+import { Table, Title } from '@mantine/core';
 import React from "react";
 
 interface IFintrackTableProps {
@@ -11,14 +11,16 @@ interface IFintrackTableProps {
 const FintrackTable: React.FC<IFintrackTableProps> = ({
     caption, thead, rows, tfoot
 }) => {
-    return (<div>
-        <Table striped highlightOnHover withBorder withColumnBorders>
-            <caption>{caption}</caption>
-            <thead>{thead}</thead>
-            <tbody>{rows}</tbody>
-            <tfoot>{tfoot}</tfoot>
-        </Table>
-    </div>)
+    return (
+        <div>
+            <Title c="blue" mb={10} order={2}>Favori Kripto Paralarım</Title>
+            <Table striped highlightOnHover withBorder withColumnBorders>
+                <caption>{caption}</caption>
+                <thead>{thead}</thead>
+                <tbody>{rows}</tbody>
+                <tfoot>{tfoot}</tfoot>
+            </Table>
+        </div>)
 
 }
 
