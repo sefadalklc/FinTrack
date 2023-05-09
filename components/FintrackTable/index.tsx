@@ -13,7 +13,6 @@ const FintrackTable: React.FC<IFintrackTableProps> = ({
 }) => {
     return (
         <div>
-            <Title c="blue" mb={10} order={2}>Favori Kripto Paralarım</Title>
             <Table striped highlightOnHover withBorder withColumnBorders>
                 <caption>{caption}</caption>
                 <thead>{thead}</thead>

@@ -1,8 +1,11 @@
 import FintrackTable from "@/components/FintrackTable";
 import useCurrencies from "@/hooks/useCurrencies";
-import { Title, createStyles } from "@mantine/core";
+import fetcher from "@/libs/fetcher";
+import { Button, Title, createStyles } from "@mantine/core";
+import { IconHeart } from "@tabler/icons-react";
 import moment from "moment";
 import { useState, useEffect } from "react";
+import useSWR from 'swr'
 
 interface IElementProps {
     symbol: string,
@@ -21,12 +24,14 @@ const useStyles = createStyles((theme): any => ({
     },
 }));
 
-const CurrencyTable = () => {
 
+const AllCurrencyTable = () => {
+
+    const { data: currencies } = useSWR('/api/currency', fetcher)
+    const currenciesNameMap = currencies ? JSON.stringify(currencies.map((e: { name: string, _id: string }) => e.name)) : JSON.stringify([])
     const { classes } = useStyles();
-
     const [fetchDate, setFetchDate] = useState<string>("");
-    const { data } = useCurrencies(JSON.stringify(["BTCUSDT", "ETHUSDT", "XRPUSDT", "AVAXUSDT", "SOLUSDT", "DYDXUSDT"]));
+    const { data } = useCurrencies(currenciesNameMap);
 
     useEffect(() => {
         setFetchDate(moment().format('MMMM Do YYYY, h:mm:ss a'))
@@ -39,6 +44,7 @@ const CurrencyTable = () => {
             <th>Low Price</th>
             <th>Open Price</th>
             <th>Volume</th>
+            <th>İşlem</th>
         </tr>
     );
 
@@ -49,12 +55,15 @@ const CurrencyTable = () => {
             <td>{Number(element.lowPrice).toFixed(4)}</td>
             <td>{Number(element.openPrice).toFixed(4)}</td>
             <td>{Number(element.volume).toFixed(4)}</td>
+            <td> <Button leftIcon={<IconHeart size="1rem" />} loaderPosition="center">
+                Add Favorite
+            </Button></td>
         </tr>
     ));
 
     return (
         <>
-            <Title c="blue" mb={10} order={2}>Favori Kripto Paralarım</Title>
+            <Title c="blue" mb={10} order={2}>Tüm Kripto Paralar</Title>
             <FintrackTable
                 thead={thead}
                 rows={rows}
@@ -64,4 +73,4 @@ const CurrencyTable = () => {
     )
 }
 
-export default CurrencyTable;
+export default AllCurrencyTable;
