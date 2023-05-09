@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import style from "@/components/TradingViewRealTimeWidget/style.module.css"
 import { Title } from '@mantine/core';
 
-
 let tvScriptLoadingPromise: Promise<Event>;
 
 const TradingViewRealTimeWidget = (): JSX.Element => {
