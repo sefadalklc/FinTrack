@@ -16,12 +16,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const { id } = req.body;
 
             // currency daha önce favoriteCurrencies
-            const findCurrency = currentUser?.favoriteCurrencies.find(e => e == id);
+            const findCurrency = currentUser?.favoriteCurrencies.find(e => e === id);
 
             if (findCurrency) {
-                return res.status(400).json({ "IsSuccess": false, "Message": "Zaten ekli!" })
-            } else {
-                let list = [...currentUser.favoriteCurrencies, id]
+                let list = currentUser.favoriteCurrencies.filter(c => c !== id);
 
                 try {
                     await prisma.user.update({
@@ -32,10 +30,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             favoriteCurrencies: list
                         }
                     })
-                    return res.status(200).json({ "IsSuccess": true, "Message": "Ekleme başarılı!" })
+                    return res.status(200).json({ "IsSuccess": true, "Message": "Silme başarılı!" })
                 } catch (e) {
                     return res.status(400).json({ "IsSuccess": false, "Message": "Hata oluştu!" })
                 }
+
+            } else {
+                return res.status(400).json({ "IsSuccess": false, "Message": "Favorilerinizde zaten yok!" })
             }
         }
     } catch (error) {

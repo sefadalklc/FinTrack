@@ -66,6 +66,31 @@ const AllCurrencyTable = () => {
             })
     }
 
+    const removeFavorite = (currency: any) => {
+        setProcessLoading({ id: currency.id, status: true });
+        fetch('/api/currency/removeFavorite', {
+            method: "POST",
+            body: JSON.stringify({
+                id: currency.id
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(res => res.json())
+            .then(res => {
+                if (res.IsSuccess) {
+                    let filteredCurrencies = favoriteCurrencies.filter((fc: string) => fc !== currency.id)
+                    setFavoriteCurrencies(filteredCurrencies)
+                    toast.success(res.Message)
+                } else {
+                    toast.error(res.Message)
+                }
+            })
+            .finally(() => {
+                setProcessLoading({ id: null, status: false })
+            })
+    }
+
     useEffect(() => {
         setFavoriteCurrencies(currentUser?.favoriteCurrencies || [])
     }, [currentUser])
@@ -110,7 +135,7 @@ const AllCurrencyTable = () => {
                     (processLoading.status && processLoading.id === currency.id) ? <Loader /> :
                         favoriteCurrencies.find((el: string) => el === currency.id)
                             ?
-                            <Button variant="gradient" bg={"red"} onClick={() => addFavorite(currency)} leftIcon={<IconTrash size="1rem" />} loaderPosition="center">
+                            <Button variant="gradient" bg={"red"} onClick={() => removeFavorite(currency)} leftIcon={<IconTrash size="1rem" />} loaderPosition="center">
                                 Remove Favorite
                             </Button>
                             : <Button variant="gradient" onClick={() => addFavorite(currency)} leftIcon={<IconHeart size="1rem" />} loaderPosition="center">
