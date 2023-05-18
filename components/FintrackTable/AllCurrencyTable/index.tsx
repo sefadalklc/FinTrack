@@ -1,13 +1,16 @@
 import FintrackTable from "@/components/FintrackTable";
 import useCurrencies from "@/hooks/useCurrencies";
+import useCurrentUser from "@/hooks/useCurrentUser";
 import fetcher from "@/libs/fetcher";
-import { Button, Title, createStyles } from "@mantine/core";
-import { IconHeart } from "@tabler/icons-react";
+import { Button, Loader, Title, createStyles } from "@mantine/core";
+import { IconHeart, IconTrash } from "@tabler/icons-react";
 import moment from "moment";
 import { useState, useEffect } from "react";
+import { toast } from "react-hot-toast";
 import useSWR from 'swr'
 
 interface IElementProps {
+    id?: string,
     symbol: string,
     highPrice: number | string
     lowPrice: number | string
@@ -28,12 +31,19 @@ const useStyles = createStyles((theme): any => ({
 const AllCurrencyTable = () => {
 
     const { data: currencies } = useSWR('/api/currency', fetcher)
+    const { data: currentUser } = useCurrentUser();
+    const [favoriteCurrencies, setFavoriteCurrencies] = useState<any>([]);
     const { classes } = useStyles();
     const [fetchDate, setFetchDate] = useState<string>("");
     const { data } = useCurrencies(currencies);
     const [matchedCurrenciesData, setMatchedCurrenciesData] = useState<any[]>([]);
+    const [processLoading, setProcessLoading] = useState({
+        status: false,
+        id: null
+    });
 
     const addFavorite = (currency: any) => {
+        setProcessLoading({ id: currency.id, status: true });
         fetch('/api/currency/addFavorite', {
             method: "POST",
             body: JSON.stringify({
@@ -42,8 +52,23 @@ const AllCurrencyTable = () => {
             headers: {
                 "Content-Type": "application/json"
             }
-        })
+        }).then(res => res.json())
+            .then(res => {
+                if (res.IsSuccess) {
+                    setFavoriteCurrencies((prevData: any) => [...prevData, currency.id])
+                    toast.success(res.Message)
+                } else {
+                    toast.error(res.Message)
+                }
+            })
+            .finally(() => {
+                setProcessLoading({ id: null, status: false })
+            })
     }
+
+    useEffect(() => {
+        setFavoriteCurrencies(currentUser?.favoriteCurrencies || [])
+    }, [currentUser])
 
     useEffect(() => {
         let matches: any[] = []
@@ -80,9 +105,19 @@ const AllCurrencyTable = () => {
             <td>{Number(currency.lowPrice).toFixed(4)}</td>
             <td>{Number(currency.openPrice).toFixed(4)}</td>
             <td>{Number(currency.volume).toFixed(4)}</td>
-            <td> <Button onClick={() => addFavorite(currency)} leftIcon={<IconHeart size="1rem" />} loaderPosition="center">
-                Add Favorite
-            </Button></td>
+            <td>
+                {
+                    (processLoading.status && processLoading.id === currency.id) ? <Loader /> :
+                        favoriteCurrencies.find((el: string) => el === currency.id)
+                            ?
+                            <Button variant="gradient" bg={"red"} onClick={() => addFavorite(currency)} leftIcon={<IconTrash size="1rem" />} loaderPosition="center">
+                                Remove Favorite
+                            </Button>
+                            : <Button variant="gradient" onClick={() => addFavorite(currency)} leftIcon={<IconHeart size="1rem" />} loaderPosition="center">
+                                Add Favorite
+                            </Button>
+                }
+            </td>
         </tr>
     ));
 
