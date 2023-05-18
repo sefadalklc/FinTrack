@@ -28,14 +28,39 @@ const useStyles = createStyles((theme): any => ({
 const AllCurrencyTable = () => {
 
     const { data: currencies } = useSWR('/api/currency', fetcher)
-    const currenciesNameMap = currencies ? JSON.stringify(currencies.map((e: { name: string, _id: string }) => e.name)) : JSON.stringify([])
     const { classes } = useStyles();
     const [fetchDate, setFetchDate] = useState<string>("");
-    const { data } = useCurrencies(currenciesNameMap);
+    const { data } = useCurrencies(currencies);
+    const [matchedCurrenciesData, setMatchedCurrenciesData] = useState<any[]>([]);
+
+    const addFavorite = (currency: any) => {
+        fetch('/api/currency/addFavorite', {
+            method: "POST",
+            body: JSON.stringify({
+                id: currency.id
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+    }
 
     useEffect(() => {
+        let matches: any[] = []
+        if (currencies && data) {
+            currencies.map((cur: { id: string, name: string }) => {
+                data.map((d: any) => {
+                    let matched = {}
+                    if (cur.name == d.symbol) {
+                        matched = { ...d, id: cur.id }
+                        matches.push(matched)
+                    }
+                })
+            })
+            setMatchedCurrenciesData(matches)
+        }
         setFetchDate(moment().format('MMMM Do YYYY, h:mm:ss a'))
-    }, [data])
+    }, [data, currencies])
 
     const thead = (
         <tr>
@@ -48,14 +73,14 @@ const AllCurrencyTable = () => {
         </tr>
     );
 
-    const rows = data?.map((element: IElementProps) => (
-        <tr key={element.symbol}>
-            <td>{element.symbol}</td>
-            <td>{Number(element.highPrice).toFixed(4)}</td>
-            <td>{Number(element.lowPrice).toFixed(4)}</td>
-            <td>{Number(element.openPrice).toFixed(4)}</td>
-            <td>{Number(element.volume).toFixed(4)}</td>
-            <td> <Button leftIcon={<IconHeart size="1rem" />} loaderPosition="center">
+    const rows = matchedCurrenciesData?.map((currency: IElementProps) => (
+        <tr key={currency.symbol}>
+            <td>{currency.symbol}</td>
+            <td>{Number(currency.highPrice).toFixed(4)}</td>
+            <td>{Number(currency.lowPrice).toFixed(4)}</td>
+            <td>{Number(currency.openPrice).toFixed(4)}</td>
+            <td>{Number(currency.volume).toFixed(4)}</td>
+            <td> <Button onClick={() => addFavorite(currency)} leftIcon={<IconHeart size="1rem" />} loaderPosition="center">
                 Add Favorite
             </Button></td>
         </tr>
