@@ -1,7 +1,8 @@
 import FintrackTable from "@/components/FintrackTable";
 import useCurrencies from "@/hooks/useCurrencies";
 import useFavoriteCurrencies from "@/hooks/useFavoriteCurrencies";
-import { Title, createStyles } from "@mantine/core";
+import { Alert, Anchor, Center, Container, Grid, Loader, Title, createStyles } from "@mantine/core";
+import { IconAlertCircle } from "@tabler/icons-react";
 import moment from "moment";
 import { useState, useEffect } from "react";
 
@@ -22,13 +23,13 @@ const useStyles = createStyles((theme): any => ({
     },
 }));
 
-const CurrencyTable = () => {
+const FavoriteCryptoCurrencyTable = () => {
 
     const { classes } = useStyles();
 
     const [fetchDate, setFetchDate] = useState<string>("");
     const { data: favoriteCurrencies } = useFavoriteCurrencies();
-    const { data } = useCurrencies(favoriteCurrencies?.data ? JSON.stringify(favoriteCurrencies?.data.map((fc: any) => fc.name)) : JSON.stringify([].map((fc: any) => fc.name)))
+    const { data, isLoading } = useCurrencies(favoriteCurrencies?.data ? JSON.stringify(favoriteCurrencies?.data.map((fc: any) => fc.name)) : JSON.stringify([].map((fc: any) => fc.name)))
 
     useEffect(() => {
         setFetchDate(moment().format('MMMM Do YYYY, h:mm:ss a'))
@@ -54,6 +55,24 @@ const CurrencyTable = () => {
         </tr>
     ));
 
+    if (isLoading) {
+        return <Center maw={"100%"} h={100} mx="auto">
+            <Loader />
+        </Center>
+
+    }
+
+    if (!data) {
+        return <>
+            <Title c="blue" mb={10} order={2}>Favori Kripto Paralarım</Title>
+            <Alert my={"lg"} icon={<IconAlertCircle size="1rem" />} title="Hiç favori kripto paranız yok!" color="red" radius="xs" variant="outline">
+                <Anchor href="/settings">
+                    Ayarlar
+                </Anchor> sayfasına giderek kripto paraları favorilerinize ekleyebilirsiniz.
+            </Alert>
+        </>
+    }
+
     return (
         <>
             <Title c="blue" mb={10} order={2}>Favori Kripto Paralarım</Title>
@@ -61,9 +80,10 @@ const CurrencyTable = () => {
                 thead={thead}
                 rows={rows}
             />
+
             <p className={classes.fetchDate}>Date: {fetchDate}</p>
         </>
     )
 }
 
-export default CurrencyTable;
+export default FavoriteCryptoCurrencyTable;

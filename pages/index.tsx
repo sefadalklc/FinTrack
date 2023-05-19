@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Sidebar from "@/components/Sidebar";
 import HomepageHeroAlert from "@/components/HomepageHeroAlert";
-import CurrencyTable from "@/components/FintrackTable/CurrencyTable";
+import FavoriteCryptoCurrencyTable from "@/components/FintrackTable/FavoriteCryptoCurrencyTable";
 import { Inter } from 'next/font/google'
 import BaseLayout from "@/layouts/baseLayout";
 import { Grid } from '@mantine/core';
@@ -21,7 +21,7 @@ export default function Home() {
       </Head>
       <Grid.Col p={15}>
         <HomepageHeroAlert />
-        <CurrencyTable />
+        <FavoriteCryptoCurrencyTable />
         <TradingViewRealTimeWidget />
       </Grid.Col>
     </>
