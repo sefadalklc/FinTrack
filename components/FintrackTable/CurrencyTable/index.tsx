@@ -1,5 +1,6 @@
 import FintrackTable from "@/components/FintrackTable";
 import useCurrencies from "@/hooks/useCurrencies";
+import useFavoriteCurrencies from "@/hooks/useFavoriteCurrencies";
 import { Title, createStyles } from "@mantine/core";
 import moment from "moment";
 import { useState, useEffect } from "react";
@@ -26,7 +27,8 @@ const CurrencyTable = () => {
     const { classes } = useStyles();
 
     const [fetchDate, setFetchDate] = useState<string>("");
-    const { data } = useCurrencies(JSON.stringify(["BTCUSDT", "ETHUSDT", "XRPUSDT", "AVAXUSDT", "SOLUSDT", "DYDXUSDT"]));
+    const { data: favoriteCurrencies } = useFavoriteCurrencies();
+    const { data } = useCurrencies(favoriteCurrencies?.data ? JSON.stringify(favoriteCurrencies?.data.map((fc: any) => fc.name)) : JSON.stringify([].map((fc: any) => fc.name)))
 
     useEffect(() => {
         setFetchDate(moment().format('MMMM Do YYYY, h:mm:ss a'))
