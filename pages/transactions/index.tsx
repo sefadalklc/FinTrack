@@ -1,10 +1,12 @@
+import AddTransaction from "@/components/AddTransaction";
 import BaseLayout from "@/layouts/baseLayout";
+import { NextPage } from "next";
 
-const Transactions = () => {
+const Transactions: NextPage = () => {
 
     return (
         <div>
-            Transactions page
+            <AddTransaction />
         </div>
     )
 
