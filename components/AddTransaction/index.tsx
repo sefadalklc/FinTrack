@@ -147,6 +147,8 @@ const AddTransaction = () => {
                         label="Miktar"
                         size="lg"
                         my="md"
+                        min={0}
+                        step={1}
                         withAsterisk
                     />
 
@@ -159,6 +161,8 @@ const AddTransaction = () => {
                         label="Birim Fiyat"
                         size="lg"
                         my="md"
+                        min={0}
+                        step={1}
                         withAsterisk
                     />
 
