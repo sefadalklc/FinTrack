@@ -54,8 +54,21 @@ const AddTransaction = () => {
 
         onSubmit: async ({ cryptoCurrency, entityType, quantity, stock, unitPrice
             , foreignCurrencyType, transactionType }) => {
-            console.log(cryptoCurrency, entityType, quantity,
-                stock, unitPrice, foreignCurrencyType, transactionType)
+            fetch('/api/transaction/addTransaction', {
+                method: "POST",
+                body: JSON.stringify({
+                    entityType: entityType,
+                    cryptoCurrency: cryptoCurrency,
+                    quantity: quantity,
+                    stock: stock,
+                    unitPrice: unitPrice,
+                    foreignCurrencyType: foreignCurrencyType,
+                    transactionType: transactionType
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
         },
     });
 
