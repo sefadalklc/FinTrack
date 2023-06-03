@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const { currentUser } = await serverAuth(req, res);
             console.log(req.body)
             // currency id'si
-            const { stock, quantity, unitPrice, cryptoCurrency, entityType, foreignCurrencyType, transactionType } = req.body;
+            const { stock, quantity, unitPrice, cryptoCurrency, entityType, foreignCurrencyType, transactionType, transactionTime } = req.body;
 
             try {
                 await prisma.transaction.create({
@@ -25,6 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         entityType,
                         foreignCurrencyType,
                         transactionType,
+                        transactionTime,
                         userId: currentUser.id
                     }
                 })

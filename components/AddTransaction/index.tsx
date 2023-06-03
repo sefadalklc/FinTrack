@@ -1,11 +1,11 @@
-import { Alert, Button, Card, Loader, Paper, PasswordInput, Select, Text, TextInput, Title, createStyles, rem } from "@mantine/core";
+import { Alert, Button, Card, Loader, Paper, Select, Switch, Text, TextInput, Title, createStyles, rem } from "@mantine/core";
 import { IconAlertCircle, IconCircle, IconCirclePlus } from "@tabler/icons-react";
 import { useFormik } from "formik";
-import Link from "next/link";
 import * as Yup from "yup";
 import { NumberInput } from '@mantine/core';
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import { DateTimePicker } from '@mantine/dates';
 
 
 const useStyles = createStyles((theme) => ({
@@ -56,23 +56,26 @@ const AddTransaction = () => {
             stock: null,
             cryptoCurrency: null,
             foreignCurrencyType: null,
-            transactionType: null
+            transactionType: null,
+            checkedTransactionTime: false,
+            transactionTime: null
         },
 
         validationSchema: addTransactionSchema,
 
-        onSubmit: async ({ cryptoCurrency, entityType, quantity, stock, unitPrice, foreignCurrencyType, transactionType }) => {
+        onSubmit: async ({ cryptoCurrency, entityType, quantity, stock, unitPrice, foreignCurrencyType, transactionType, transactionTime }) => {
             setProcessLoading({ status: true })
             fetch('/api/transaction/addTransaction', {
                 method: "POST",
                 body: JSON.stringify({
-                    entityType: entityType,
-                    cryptoCurrency: cryptoCurrency,
-                    quantity: quantity,
-                    stock: stock,
-                    unitPrice: unitPrice,
-                    foreignCurrencyType: foreignCurrencyType,
-                    transactionType: transactionType
+                    entityType,
+                    cryptoCurrency,
+                    quantity,
+                    stock,
+                    unitPrice,
+                    foreignCurrencyType,
+                    transactionType,
+                    transactionTime
                 }),
                 headers: {
                     "Content-Type": "application/json"
@@ -84,9 +87,6 @@ const AddTransaction = () => {
                     } else {
                         toast.error(res.Message)
                     }
-                })
-                .catch(e => {
-                    toast.error("Hata oluştu!")
                 })
                 .finally(() => {
                     setProcessLoading({ status: false })
@@ -221,6 +221,29 @@ const AddTransaction = () => {
                         withAsterisk
                     />
                     {errors.transactionType && touched.transactionType && <Alert mt={10} icon={<IconAlertCircle size="2rem" />} color="red" radius="md" p="xs" variant="outline">{errors.transactionType}</Alert>}
+
+                    {
+                        values.checkedTransactionTime && (
+                            <DateTimePicker
+                                value={values.transactionTime}
+                                onChange={(e) => setFieldValue('transactionTime', e)}
+                                label="Tarih ve zaman seçiniz"
+                                size="lg"
+                                my="md"
+                                placeholder="Tarih ve zaman seçiniz"
+                                maw={400}
+                                mx="auto"
+                                withAsterisk
+                            />
+                        )
+                    }
+
+                    <Switch
+                        checked={values.checkedTransactionTime}
+                        onChange={(e) => setFieldValue('checkedTransactionTime', e.currentTarget.checked)}
+                        label="İşlem için gerçekleşme zamanı eklemek istiyorum."
+                    />
+
                     <Button fullWidth mt="xl" size="md" type='submit'>
                         {!processLoading.status ? "Kaydet" : <Loader color="#fff" />}
                     </Button>

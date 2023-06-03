@@ -28,7 +28,7 @@ model User {
   posts              Post[]
   notifications      Notification[]
   favoriteCurrencies String[]
-  transactions Transaction[]
+  transactions       Transaction[]
 }
 
 model Post {
@@ -47,17 +47,18 @@ model Currency {
 }
 
 model Transaction {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  entityType String?
-  quantity Float
-  unitPrice Float
-  stock String?
-  cryptoCurrency String?
+  id                  String    @id @default(auto()) @map("_id") @db.ObjectId
+  entityType          String?
+  quantity            Float
+  unitPrice           Float
+  stock               String?
+  cryptoCurrency      String?
   foreignCurrencyType String?
-  transactionType String?
-  userId    String?  @db.ObjectId
-  createdAt DateTime @default(now())
-  user  User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactionType     String?
+  userId              String?   @db.ObjectId
+  createdAt           DateTime  @default(now())
+  transactionTime     DateTime?
+  user                User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Notification {
