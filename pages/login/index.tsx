@@ -72,6 +72,7 @@ const Login: NextPage = () => {
         await signIn('credentials', {
           email,
           password,
+          callbackUrl: `${window.location.origin}/`
         });
         toast.success('Giriş başarılı!');
 
