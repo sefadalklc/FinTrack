@@ -9,7 +9,7 @@ import { NumberInput } from '@mantine/core';
 const useStyles = createStyles((theme) => ({
     card: {
         borderRight: `${rem(1)} solid ${theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[3]}`,
-        minHeight: rem(900),
+        minHeight: rem('100%'),
         maxWidth: rem(600),
         paddingTop: rem(80),
         [theme.fn.smallerThan('sm')]: {
@@ -45,13 +45,17 @@ const AddTransaction = () => {
             quantity: 1,
             unitPrice: 1,
             stock: null,
-            cryptoCurrency: null
+            cryptoCurrency: null,
+            foreignCurrencyType: null,
+            transactionType: null
         },
 
         validationSchema: addTransactionSchema,
 
-        onSubmit: async ({ entityType }) => {
-            console.log(entityType)
+        onSubmit: async ({ cryptoCurrency, entityType, quantity, stock, unitPrice
+            , foreignCurrencyType, transactionType }) => {
+            console.log(cryptoCurrency, entityType, quantity,
+                stock, unitPrice, foreignCurrencyType, transactionType)
         },
     });
 
@@ -61,8 +65,8 @@ const AddTransaction = () => {
         <Card className={classes.card} shadow="sm" padding="lg" radius="md" withBorder>
             <form method='POST' onSubmit={handleSubmit}>
                 <Paper radius={0} p={30}>
-                    <Title order={2} className={classes.title} ta="left" my="xl">
-                        <IconCirclePlus size={35} /> İşlem Ekle
+                    <Title order={2} className={classes.title} ta="left" my="xl" display={"flex"}>
+                        <IconCirclePlus size={35} style={{ marginRight: "10px" }} /> <span>İşlem Ekle</span>
                     </Title>
 
                     <Select
@@ -120,6 +124,7 @@ const AddTransaction = () => {
                             label="Döviz Tipi"
                             size="lg"
                             my="md"
+                            onChange={(e) => setFieldValue('foreignCurrencyType', e)}
                             placeholder="Döviz tipi seç"
                             data={[
                                 { value: 'USD', label: 'ABD Doları' },
@@ -171,6 +176,7 @@ const AddTransaction = () => {
                         size="lg"
                         my="md"
                         placeholder="İşlem tipi seç"
+                        onChange={(e) => setFieldValue('transactionType', e)}
                         data={[
                             { value: 'plus', label: 'Ekle' },
                             { value: 'minus', label: 'Çıkar' },
