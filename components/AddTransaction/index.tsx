@@ -1,9 +1,11 @@
-import { Alert, Button, Card, Paper, PasswordInput, Select, Text, TextInput, Title, createStyles, rem } from "@mantine/core";
+import { Alert, Button, Card, Loader, Paper, PasswordInput, Select, Text, TextInput, Title, createStyles, rem } from "@mantine/core";
 import { IconAlertCircle, IconCircle, IconCirclePlus } from "@tabler/icons-react";
 import { useFormik } from "formik";
 import Link from "next/link";
 import * as Yup from "yup";
 import { NumberInput } from '@mantine/core';
+import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 
 const useStyles = createStyles((theme) => ({
@@ -33,15 +35,22 @@ const useStyles = createStyles((theme) => ({
 const AddTransaction = () => {
 
     const { classes } = useStyles();
+    const [processLoading, setProcessLoading] = useState({
+        status: false,
+    });
 
     const addTransactionSchema = Yup.object().shape({
-        entityType: Yup.string().nullable()
+        entityType: Yup.string().required("Lütfen bir varlık tipi seçiniz"),
+        quantity: Yup.number(),
+        unitPrice: Yup.number(),
+        transactionType: Yup.string().required("Lütfen işlem tipi seçiniz.")
     });
 
 
     const formik = useFormik({
+        enableReinitialize: true,
         initialValues: {
-            entityType: null,
+            entityType: "tl",
             quantity: 1,
             unitPrice: 1,
             stock: null,
@@ -52,8 +61,8 @@ const AddTransaction = () => {
 
         validationSchema: addTransactionSchema,
 
-        onSubmit: async ({ cryptoCurrency, entityType, quantity, stock, unitPrice
-            , foreignCurrencyType, transactionType }) => {
+        onSubmit: async ({ cryptoCurrency, entityType, quantity, stock, unitPrice, foreignCurrencyType, transactionType }) => {
+            setProcessLoading({ status: true })
             fetch('/api/transaction/addTransaction', {
                 method: "POST",
                 body: JSON.stringify({
@@ -68,7 +77,21 @@ const AddTransaction = () => {
                 headers: {
                     "Content-Type": "application/json"
                 }
-            })
+            }).then(res => res.json())
+                .then(res => {
+                    if (res.IsSuccess) {
+                        toast.success(res.Message)
+                    } else {
+                        toast.error(res.Message)
+                    }
+                })
+                .catch(e => {
+                    toast.error("Hata oluştu!")
+                })
+                .finally(() => {
+                    setProcessLoading({ status: false })
+                    formik.resetForm();
+                })
         },
     });
 
@@ -87,6 +110,7 @@ const AddTransaction = () => {
                         onChange={(e) => setFieldValue('entityType', e)}
                         label="Varlık Tipi"
                         size="lg"
+                        value={values.entityType}
                         my="md"
                         placeholder="Varlık tipi seç"
                         data={[
@@ -99,7 +123,7 @@ const AddTransaction = () => {
                         ]}
                         withAsterisk
                     />
-
+                    {errors.entityType && touched.entityType && <Alert mt={10} icon={<IconAlertCircle size="2rem" />} color="red" radius="md" p="xs" variant="outline">{errors.entityType}</Alert>}
 
                     {(values.entityType && values.entityType === "stock")
                         &&
@@ -126,8 +150,6 @@ const AddTransaction = () => {
                             id="cryptoCurrency"
                             withAsterisk
                         />
-
-
                     }
 
 
@@ -163,6 +185,7 @@ const AddTransaction = () => {
                         onChange={(e) => setFieldValue('quantity', e)}
                         placeholder="Miktar giriniz"
                         label="Miktar"
+                        type="number"
                         size="lg"
                         my="md"
                         min={0}
@@ -177,6 +200,7 @@ const AddTransaction = () => {
                         onChange={(e) => setFieldValue('unitPrice', e)}
                         placeholder="Birim fiyat giriniz"
                         label="Birim Fiyat"
+                        type="number"
                         size="lg"
                         my="md"
                         min={0}
@@ -196,8 +220,9 @@ const AddTransaction = () => {
                         ]}
                         withAsterisk
                     />
+                    {errors.transactionType && touched.transactionType && <Alert mt={10} icon={<IconAlertCircle size="2rem" />} color="red" radius="md" p="xs" variant="outline">{errors.transactionType}</Alert>}
                     <Button fullWidth mt="xl" size="md" type='submit'>
-                        Kaydet
+                        {!processLoading.status ? "Kaydet" : <Loader color="#fff" />}
                     </Button>
                 </Paper>
             </form>
