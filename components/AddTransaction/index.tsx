@@ -32,7 +32,7 @@ const useStyles = createStyles((theme) => ({
 
 }));
 
-const AddTransaction = () => {
+const AddTransaction = ({ setNewTransaction }: { setNewTransaction: (e: any) => void }) => {
 
     const { classes } = useStyles();
     const [processLoading, setProcessLoading] = useState({
@@ -83,6 +83,7 @@ const AddTransaction = () => {
             }).then(res => res.json())
                 .then(res => {
                     if (res.IsSuccess) {
+                        setNewTransaction(true)
                         toast.success(res.Message)
                     } else {
                         toast.error(res.Message)

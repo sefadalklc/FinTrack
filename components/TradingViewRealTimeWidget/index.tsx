@@ -44,7 +44,7 @@ const TradingViewRealTimeWidget = (): JSX.Element => {
         ) {
             new window.TradingView.widget({
                 autosize: true,
-                symbol: 'NASDAQ:AAPL',
+                symbol: 'BINANCE:BTCUSD',
                 interval: 'D',
                 timezone: 'Etc/UTC',
                 theme: 'light', // dark

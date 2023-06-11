@@ -37,11 +37,11 @@ const FavoriteCryptoCurrencyTable = () => {
 
     const thead = (
         <tr>
-            <th>Symbol</th>
-            <th>High Price</th>
-            <th>Low Price</th>
-            <th>Open Price</th>
-            <th>Volume</th>
+            <th>Sembol</th>
+            <th>En Yüksek Fiyat</th>
+            <th>En Düşük Fiyat</th>
+            <th>Açılış Fiyatı</th>
+            <th>Hacim</th>
         </tr>
     );
 
